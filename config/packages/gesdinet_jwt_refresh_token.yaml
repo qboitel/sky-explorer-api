@@ -1,0 +1,16 @@
+gesdinet_jwt_refresh_token:
+    refresh_token_class: App\Entity\RefreshToken # Scaffolded by the bundle recipe
+    ttl: 15780000 # 6 months in seconds
+    single_use: false
+    return_expiration: true
+
+    # Use cookies for the refresh token
+    cookie:
+        enabled: true
+        remove_token_from_body: false
+        # Cookie parameters
+        http_only: true
+        same_site: none
+        secure: true
+        path: /
+        domain: null

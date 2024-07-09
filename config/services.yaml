@@ -4,6 +4,8 @@
 # Put parameters here that don't need to change on each machine where the app is deployed
 # https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
 parameters:
+    app.info.internal.header.key: x-app-info
+
 
 services:
     # default configuration for services in *this* file
@@ -19,6 +21,16 @@ services:
             - '../src/DependencyInjection/'
             - '../src/Entity/'
             - '../src/Kernel.php'
+
+    App\Security\InternalAuthenticator:
+        arguments: [ '%app.info.internal.header.key%' ]
+
+
+    App\OpenApi\OpenApiFactory:
+        decorates: 'api_platform.openapi.factory'
+        decoration_priority: -1
+        arguments: [ '@.inner' ]
+
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones

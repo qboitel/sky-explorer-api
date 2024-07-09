@@ -1,3 +1,15 @@
+api_login_check:
+    path: /api/authentication_token
+    methods: ['POST']
+
+api_refresh_token:
+    path: /api/auth/refresh
+    methods: ['POST']
+
+api_logout_token:
+    path: /api/auth/logout
+    methods: ['POST']
+
 controllers:
     resource:
         path: ../src/Controller/

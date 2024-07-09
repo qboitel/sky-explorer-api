@@ -1,0 +1,25 @@
+lexik_jwt_authentication:
+    secret_key: '%env(base64:JWT_SECRET_KEY)%'
+    public_key: '%env(base64:JWT_PUBLIC_KEY)%'
+    pass_phrase: '%env(JWT_PASSPHRASE)%'
+    token_extractors:
+        authorization_header:
+            enabled: true
+            prefix: Bearer
+            name: Authorization
+        cookie:
+            enabled: true
+            name: BEARER
+    set_cookies:
+        BEARER: ~
+    user_id_claim: id
+    remove_token_from_body_when_cookies_used: false
+
+when@dev: &lexik_jwt_authentication_dev
+    lexik_jwt_authentication:
+        token_ttl: 86400 # 1 day
+        set_cookies:
+            BEARER:
+                samesite: none
+
+when@staging: *lexik_jwt_authentication_dev

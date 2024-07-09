@@ -1,0 +1,58 @@
+api_platform:
+    title: 'Sky Explorer API'
+    version: '1.0.0'
+    mapping:
+        paths: [
+            '%kernel.project_dir%/src/ApiResource',
+            '%kernel.project_dir%/src/Entity'
+        ]
+    formats:
+        jsonld: ['application/ld+json']
+        json: ['application/json']
+    docs_formats:
+        jsonld: ['application/ld+json']
+        json: ['application/json']
+        jsonopenapi: ['application/vnd.openapi+json']
+        html: ['text/html']
+    patch_formats:
+        json: ['application/merge-patch+json']
+    swagger:
+        versions: [3]
+        swagger_ui_extra_configuration:
+            docExpansion: none
+    show_webby: false
+    defaults:
+        stateless: true
+        cache_headers:
+            vary: ['Content-Type', 'Authorization', 'Origin']
+        extra_properties:
+            standard_put: true
+            rfc_7807_compliant_errors: true
+        pagination_client_enabled: true
+        pagination_client_items_per_page: true
+        pagination_maximum_items_per_page: 500
+        pagination_client_partial: true
+    event_listeners_backward_compatibility_layer: false
+    keep_legacy_inflector: false
+    collection:
+        pagination:
+            items_per_page_parameter_name: limit
+    exception_to_status:
+        Symfony\Component\Serializer\Exception\ExceptionInterface: 400 # Use a raw status code (recommended)
+        ApiPlatform\Exception\InvalidArgumentException: !php/const Symfony\Component\HttpFoundation\Response::HTTP_BAD_REQUEST
+        ApiPlatform\Exception\FilterValidationException: !php/const Symfony\Component\HttpFoundation\Response::HTTP_BAD_REQUEST
+        ApiPlatform\Exception\InvalidUriVariableException: !php/const Symfony\Component\HttpFoundation\Response::HTTP_BAD_REQUEST
+        Doctrine\ORM\OptimisticLockException: !php/const Symfony\Component\HttpFoundation\Response::HTTP_CONFLICT
+        Doctrine\DBAL\Exception\ForeignKeyConstraintViolationException: !php/const Symfony\Component\HttpFoundation\Response::HTTP_CONFLICT
+        Symfony\Component\PropertyAccess\Exception\InvalidPropertyPathException: !php/const Symfony\Component\HttpFoundation\Response::HTTP_UNPROCESSABLE_ENTITY
+        ApiPlatform\Validator\Exception\ValidationException: !php/const Symfony\Component\HttpFoundation\Response::HTTP_UNPROCESSABLE_ENTITY
+        Doctrine\DBAL\Exception\UniqueConstraintViolationException: !php/const Symfony\Component\HttpFoundation\Response::HTTP_CONFLICT
+        App\Exception\ExternalCompostingCheckException: !php/const Symfony\Component\HttpFoundation\Response::HTTP_MISDIRECTED_REQUEST
+
+when@prod:
+    api_platform:
+        enable_docs: false
+        enable_entrypoint: false
+        #enable_swagger: false
+        #enable_swagger_ui: false
+        #enable_re_doc: false
