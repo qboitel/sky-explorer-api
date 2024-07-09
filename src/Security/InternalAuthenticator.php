@@ -17,6 +17,7 @@ use Symfony\Component\String\Slugger\AsciiSlugger;
 class InternalAuthenticator extends AbstractAuthenticator
 {
     public function __construct(
+        private readonly string $securityInternalHeaderKey,
         private readonly string $appInfoInternalHeaderKey
     ) {
     }
@@ -28,7 +29,8 @@ class InternalAuthenticator extends AbstractAuthenticator
      */
     public function supports(Request $request): ?bool
     {
-        return $request->headers->has($this->appInfoInternalHeaderKey);
+        return $request->headers->has($this->securityInternalHeaderKey)
+            && $request->headers->has($this->appInfoInternalHeaderKey);
     }
 
     /**
@@ -44,7 +46,7 @@ class InternalAuthenticator extends AbstractAuthenticator
         $slugger = new AsciiSlugger();
 
         return [
-            'key' => $headers->get($this->appInfoInternalHeaderKey),
+            'key' => $headers->get($this->securityInternalHeaderKey),
             'name' => $name,
             'email' => sprintf('%s@internal', $slugger->slug($name)),
             'roles' => ['ROLE_INTERNAL'],
@@ -60,7 +62,7 @@ class InternalAuthenticator extends AbstractAuthenticator
         // no credential check is needed in this case
 
         // return true to cause authentication success
-        return $credentials['key'] === $this->appInfoInternalHeaderKey;
+        return $credentials['key'] === $this->securityInternalHeaderKey;
     }
 
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $firewallName): ?Response
