@@ -2,8 +2,11 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\ApiResource;
+use App\Filter\TypedSearchFilter;
 use App\Traits\TimestampableTrait;
+use Symfony\Component\Serializer\Attribute\Groups;
 use Symfony\Component\Uid\Uuid;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
@@ -11,34 +14,51 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Entity]
 #[ORM\Table(name: 'reservations')]
 #[ORM\HasLifecycleCallbacks]
-#[ApiResource]
+#[ApiResource(
+    normalizationContext: ['groups' => ['reservation:read']],
+    denormalizationContext: ['groups' => ['reservation:write']]
+)]
+#[ApiFilter(filterClass: TypedSearchFilter::class, properties: [
+    'user' => 'exact',
+    'user.id' => 'exact',
+])]
+
 class Reservation implements \Stringable
 {
     use TimestampableTrait;
 
     #[ORM\Id]
     #[ORM\Column(type: 'uuid')]
+    #[Groups(['reservation:read'])]
     private Uuid $id;
 
     #[ORM\ManyToOne(targetEntity: User::class)]
+    #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['reservation:read', 'reservation:write'])]
     private User $user;
 
     #[ORM\ManyToOne(targetEntity: User::class)]
+    #[Groups(['reservation:read', 'reservation:write'])]
     private User $instructor;
 
     #[ORM\ManyToOne(targetEntity: Course::class)]
+    #[Groups(['reservation:read', 'reservation:write'])]
     private Course $course;
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE, options: ['default' => 'CURRENT_TIMESTAMP'])]
+    #[Groups(['reservation:read', 'reservation:write'])]
     private \DateTimeImmutable $startsAt;
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE, options: ['default' => 'CURRENT_TIMESTAMP'])]
+    #[Groups(['reservation:read', 'reservation:write'])]
     private \DateTimeImmutable $endsAt;
 
     #[ORM\Column(type: Types::TEXT)]
+    #[Groups(['reservation:read', 'reservation:write'])]
     private string $feedbacks;
 
     #[ORM\Column(type: Types::TEXT)]
+    #[Groups(['reservation:read', 'reservation:write'])]
     private string $followUp;
 
     public function __construct()

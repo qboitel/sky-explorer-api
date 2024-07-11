@@ -5,6 +5,7 @@ namespace App\Entity;
 use ApiPlatform\Metadata\ApiResource;
 use App\Traits\TimestampableTrait;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Symfony\Component\Uid\Uuid;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
@@ -31,16 +32,18 @@ class Formation implements \Stringable
     private float $price;
 
     #[ORM\ManyToMany(targetEntity: Course::class)]
-    private ArrayCollection $courses;
+    private Collection $courses;
 
     #[ORM\OneToMany(targetEntity: Module::class, mappedBy: 'formation')]
-    private ArrayCollection $modules;
+    private Collection $modules;
 
     public function __construct()
     {
         $this->id = Uuid::v7();
         $this->createdAt = new \DateTimeImmutable();
         $this->updatedAt = new \DateTimeImmutable();
+        $this->courses = new ArrayCollection();
+        $this->modules = new ArrayCollection();
     }
 
     public function getId(): Uuid
@@ -84,26 +87,26 @@ class Formation implements \Stringable
         return $this;
     }
 
-    public function getCourses(): ArrayCollection
+    public function getCourses(): Collection
     {
         return $this->courses;
     }
 
-    public function setCourses(ArrayCollection $courses): static
-    {
-        $this->courses = $courses;
-
-        return $this;
-    }
-
-    public function getModules(): string
+    public function getModules(): Collection
     {
         return $this->modules;
     }
 
-    public function setModules(string $modules): static
+    public function addModule(Module $module): static
     {
-        $this->modules = $modules;
+        $this->modules->add($module);
+
+        return $this;
+    }
+
+    public function removeModule(Module $module): static
+    {
+        $this->modules->removeElement($module);
 
         return $this;
     }

@@ -14,57 +14,73 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Serializer\Attribute\Groups;
 use Symfony\Component\Uid\Uuid;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: '`user`')]
 #[UniqueEntity('email', 'username')]
-#[ApiResource]
+#[ApiResource(
+    normalizationContext: ['groups' => ['user:read']],
+    denormalizationContext: ['groups' => ['user:write']],
+)]
 class User implements UserInterface, PasswordAuthenticatedUserInterface, \Stringable
 {
     use TimestampableTrait;
 
     #[ORM\Id]
     #[ORM\Column(type: 'uuid')]
+    #[Groups(['user:read', 'reservation:read'])]
     private Uuid $id;
 
     #[ORM\Column(type: Types::STRING, length: 100)]
+    #[Groups(['user:read', 'user:write', 'reservation:read'])]
     private string $lastName;
 
     #[ORM\Column(type: Types::STRING, length: 100)]
+    #[Groups(['user:read', 'user:write', 'reservation:read'])]
     private string $firstName;
 
     #[ORM\Column(type: Types::STRING, length: 10)]
+    #[Groups(['user:read', 'user:write', 'reservation:read'])]
     private string $phone;
 
     #[ORM\Column(type: Types::STRING, length: 180)]
+    #[Groups(['user:read', 'user:write', 'reservation:read'])]
     private string $email;
 
     /**
      * @var list<string> The user roles
      */
     #[ORM\Column]
+    #[Groups(['user:read', 'user:write', 'reservation:read'])]
     private array $roles = [];
 
     /**
      * @var string The hashed password
      */
     #[ORM\Column]
+    #[Groups('user:write')]
     private string $password;
 
     #[ORM\Column(type: Types::BOOLEAN, options: ['default' => true])]
+    #[Groups(['user:read', 'user:write', 'reservation:read'])]
     private bool $active = true;
 
     #[ORM\OneToMany(targetEntity: License::class, mappedBy: 'user', cascade: ['remove'])]
+    #[Groups(['user:read', 'user:write', 'reservation:read'])]
     private Collection $licenses;
 
     #[ORM\OneToMany(targetEntity: MedicalCertificate::class, mappedBy: 'user', cascade: ['remove'])]
+    #[Groups(['user:read', 'user:write', 'reservation:read'])]
     private Collection $medicalCertificates;
 
     #[ORM\Column(type: Types::STRING, length: 36, unique: true, nullable: false)]
+    #[Groups(['user:read', 'user:write', 'reservation:read'])]
     private string $username;
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
+    #[Groups(['user:read', 'user:write', 'reservation:read'])]
     private ?\DateTimeImmutable $lastConnectedAt = null;
 
     public function __construct()
