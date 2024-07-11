@@ -6,27 +6,35 @@ use ApiPlatform\Metadata\ApiResource;
 use App\Traits\TimestampableTrait;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Attribute\Groups;
 use Symfony\Component\Uid\Uuid;
 
 #[ORM\Entity]
 #[ORM\Table(name: 'planes')]
 #[ORM\HasLifecycleCallbacks]
-#[ApiResource]
+#[ApiResource(
+    normalizationContext: ['groups' => ['plane:read']],
+    denormalizationContext: ['groups' => ['plane:write']]
+)]
 class Plane
 {
     use TimestampableTrait;
 
     #[ORM\Id]
     #[ORM\Column(type: 'uuid')]
+    #[Groups(['plane:read'])]
     private Uuid $id;
 
     #[ORM\Column(type: Types::STRING, length: 255)]
+    #[Groups(['plane:read', 'plane:write'])]
     private string $immatriculation;
 
     #[ORM\Column(type: Types::STRING, length: 255)]
+    #[Groups(['plane:read', 'plane:write'])]
     private string $type;
 
     #[ORM\Column(type: Types::STRING, length: 255)]
+    #[Groups(['plane:read', 'plane:write', 'course:read'])]
     private string $model;
 
     public function __construct()

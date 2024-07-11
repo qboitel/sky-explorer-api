@@ -6,33 +6,47 @@ use ApiPlatform\Metadata\ApiResource;
 use App\Traits\TimestampableTrait;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Attribute\Groups;
 use Symfony\Component\Uid\Uuid;
 
 #[ORM\Entity]
 #[ORM\Table(name: 'courses')]
 #[ORM\HasLifecycleCallbacks]
-#[ApiResource]
+#[ApiResource(
+    normalizationContext: ['groups' => ['course:read']],
+    denormalizationContext: ['groups' => ['course:write']],
+)]
 class Course implements \Stringable
 {
     use TimestampableTrait;
 
     #[ORM\Id]
     #[ORM\Column(type: 'uuid')]
+    #[Groups(['course:read', 'formation:read'])]
     private Uuid $id;
 
     #[ORM\Column(type: 'string')]
+    #[Groups(['course:read', 'course:write', 'formation:read'])]
     private string $name;
 
     #[ORM\Column(type: Types::TEXT)]
+    #[Groups(['course:read', 'course:write'])]
     private string $description;
 
     #[ORM\ManyToOne(targetEntity: Plane::class)]
+    #[Groups(['course:read', 'course:write'])]
     private Plane $plane;
 
+    #[ORM\ManyToOne(targetEntity: Formation::class)]
+    #[Groups(['course:read', 'course:write'])]
+    private Formation $formation;
+
     #[ORM\Column(type: Types::FLOAT)]
+    #[Groups(['course:read', 'course:write'])]
     private float $price;
 
     #[ORM\Column(type: Types::TEXT)]
+    #[Groups(['course:read', 'course:write'])]
     private string $subjects;
 
     public function __construct()
@@ -79,6 +93,18 @@ class Course implements \Stringable
     public function setPlane(Plane $plane): static
     {
         $this->plane = $plane;
+
+        return $this;
+    }
+
+    public function getFormation(): Formation
+    {
+        return $this->formation;
+    }
+
+    public function setFormation(Formation $formation): static
+    {
+        $this->formation = $formation;
 
         return $this;
     }

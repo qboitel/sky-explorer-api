@@ -5,6 +5,7 @@ namespace App\Entity;
 use ApiPlatform\Metadata\ApiResource;
 use App\Traits\TimestampableTrait;
 use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Component\Serializer\Attribute\Groups;
 use Symfony\Component\Uid\Uuid;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\DBAL\Types\Types;
@@ -12,25 +13,33 @@ use Doctrine\DBAL\Types\Types;
 #[ORM\Entity]
 #[ORM\Table(name: 'modules')]
 #[ORM\HasLifecycleCallbacks]
-#[ApiResource]
+#[ApiResource(
+    normalizationContext: ['groups' => ['module:read']],
+    denormalizationContext: ['groups' => ['module:write']]
+)]
 class Module implements \Stringable
 {
     use TimestampableTrait;
 
     #[ORM\Id]
     #[ORM\Column(type: 'uuid')]
+    #[Groups(['module:read'])]
     private Uuid $id;
 
     #[ORM\Column(type: Types::STRING, length: 255)]
+    #[Groups(['module:read', 'module:write', 'formation:read'])]
     private string $name;
 
     #[ORM\Column(type: Types::TEXT)]
+    #[Groups(['module:read', 'module:write'])]
     private string $description;
 
     #[ORM\ManyToOne(targetEntity: Formation::class)]
+    #[Groups(['module:read', 'module:write'])]
     private Formation $formation;
 
     #[ORM\OneToMany(targetEntity: Competence::class, mappedBy: 'module')]
+    #[Groups(['module:read', 'module:write'])]
     private ArrayCollection $competences;
 
     public function __construct()
