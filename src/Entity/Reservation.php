@@ -5,6 +5,7 @@ namespace App\Entity;
 use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\ApiResource;
 use App\Enum\Type;
+use App\Filter\TypedDateFilter;
 use App\Filter\TypedSearchFilter;
 use App\Traits\TimestampableTrait;
 use Symfony\Component\Serializer\Attribute\Groups;
@@ -19,11 +20,14 @@ use Doctrine\ORM\Mapping as ORM;
     normalizationContext: ['groups' => ['reservation:read']],
     denormalizationContext: ['groups' => ['reservation:write']]
 )]
+#[ApiFilter(filterClass: TypedDateFilter::class, properties: [
+    'startsAt' => Types::DATETIME_IMMUTABLE,
+    'endsAt' => Types::DATETIME_IMMUTABLE,
+])]
 #[ApiFilter(filterClass: TypedSearchFilter::class, properties: [
     'user' => 'exact',
     'user.id' => 'exact',
 ])]
-
 class Reservation implements \Stringable
 {
     use TimestampableTrait;
