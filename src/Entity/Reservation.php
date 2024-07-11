@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\ApiResource;
+use App\Enum\Type;
 use App\Filter\TypedSearchFilter;
 use App\Traits\TimestampableTrait;
 use Symfony\Component\Serializer\Attribute\Groups;
@@ -31,6 +32,10 @@ class Reservation implements \Stringable
     #[ORM\Column(type: 'uuid')]
     #[Groups(['reservation:read'])]
     private Uuid $id;
+
+    #[ORM\Column(type: Types::INTEGER, enumType: Type::class)]
+    #[Groups(['reservation:read', 'reservation:write'])]
+    private Type $type;
 
     #[ORM\ManyToOne(targetEntity: User::class)]
     #[ORM\JoinColumn(nullable: false)]
@@ -72,6 +77,19 @@ class Reservation implements \Stringable
     {
         return $this->id;
     }
+
+    public function getType(): Type
+    {
+        return $this->type;
+    }
+
+    public function setType(Type $type): static
+    {
+        $this->type = $type;
+
+        return $this;
+    }
+
 
     public function getUser(): User
     {
