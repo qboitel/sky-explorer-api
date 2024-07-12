@@ -37,6 +37,10 @@ class Plane
     #[Groups(['plane:read', 'plane:write', 'course:read'])]
     private string $model;
 
+    #[ORM\Column(type: Types::TEXT)]
+    #[Groups(['plane:read', 'plane:write', 'course:read'])]
+    private string $image;
+
     public function __construct()
     {
         $this->id = Uuid::v7();
@@ -81,6 +85,18 @@ class Plane
     public function setModel(string $model): static
     {
         $this->model = $model;
+
+        return $this;
+    }
+
+    public function getImage(): string
+    {
+        return $this->image;
+    }
+
+    public function setImage(string $image): static
+    {
+        $this->image = $image;
 
         return $this;
     }
