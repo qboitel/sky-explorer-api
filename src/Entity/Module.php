@@ -5,6 +5,7 @@ namespace App\Entity;
 use ApiPlatform\Metadata\ApiResource;
 use App\Traits\TimestampableTrait;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Symfony\Component\Serializer\Attribute\Groups;
 use Symfony\Component\Uid\Uuid;
 use Doctrine\ORM\Mapping as ORM;
@@ -23,11 +24,11 @@ class Module implements \Stringable
 
     #[ORM\Id]
     #[ORM\Column(type: 'uuid')]
-    #[Groups(['module:read'])]
+    #[Groups(['module:read', 'formation:read', 'reservation:read'])]
     private Uuid $id;
 
     #[ORM\Column(type: Types::STRING, length: 255)]
-    #[Groups(['module:read', 'module:write', 'formation:read'])]
+    #[Groups(['module:read', 'module:write', 'formation:read', 'reservation:read'])]
     private string $name;
 
     #[ORM\Column(type: Types::TEXT)]
@@ -39,7 +40,7 @@ class Module implements \Stringable
     private Formation $formation;
 
     #[ORM\ManyToOne(targetEntity: Plane::class)]
-    #[Groups(['module:read', 'module:write'])]
+    #[Groups(['module:read', 'module:write', 'reservation:read'])]
     private Plane $plane;
 
     #[ORM\Column(type: Types::FLOAT)]
@@ -48,13 +49,14 @@ class Module implements \Stringable
 
     #[ORM\OneToMany(targetEntity: Competence::class, mappedBy: 'module')]
     #[Groups(['module:read', 'module:write'])]
-    private ArrayCollection $competences;
+    private Collection $competences;
 
     public function __construct()
     {
         $this->id = Uuid::v7();
         $this->createdAt = new \DateTimeImmutable();
         $this->updatedAt = new \DateTimeImmutable();
+        $this->competences = new ArrayCollection();
     }
 
     public function getId(): Uuid
@@ -98,14 +100,21 @@ class Module implements \Stringable
         return $this;
     }
 
-    public function getCompetences(): ArrayCollection
+    public function getCompetences(): Collection
     {
         return $this->competences;
     }
 
-    public function setCompetences(ArrayCollection $competences): static
+    public function addCompetence(Competence $competence): static
     {
-        $this->competences = $competences;
+        $this->competences->add($competence);
+
+        return $this;
+    }
+
+    public function removeCompetence(Competence $competence): static
+    {
+        $this->competences->removeElement($competence);
 
         return $this;
     }

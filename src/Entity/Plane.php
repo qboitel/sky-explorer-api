@@ -22,23 +22,23 @@ class Plane
 
     #[ORM\Id]
     #[ORM\Column(type: 'uuid')]
-    #[Groups(['plane:read'])]
+    #[Groups(['plane:read', 'module:read', 'reservation:read'])]
     private Uuid $id;
 
     #[ORM\Column(type: Types::STRING, length: 255)]
-    #[Groups(['plane:read', 'plane:write'])]
+    #[Groups(['plane:read', 'plane:write', 'module:read', 'reservation:read'])]
     private string $immatriculation;
 
     #[ORM\Column(type: Types::STRING, length: 255)]
-    #[Groups(['plane:read', 'plane:write'])]
+    #[Groups(['plane:read', 'plane:write', 'module:read', 'reservation:read'])]
     private string $type;
 
     #[ORM\Column(type: Types::STRING, length: 255)]
-    #[Groups(['plane:read', 'plane:write', 'course:read'])]
+    #[Groups(['plane:read', 'plane:write', 'module:read', 'reservation:read'])]
     private string $model;
 
     #[ORM\Column(type: Types::TEXT)]
-    #[Groups(['plane:read', 'plane:write', 'course:read'])]
+    #[Groups(['plane:read', 'plane:write', 'module:read', 'reservation:read'])]
     private string $image;
 
     public function __construct()
