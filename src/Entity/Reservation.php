@@ -50,9 +50,9 @@ class Reservation implements \Stringable
     #[Groups(['reservation:read', 'reservation:write'])]
     private User $instructor;
 
-    #[ORM\ManyToOne(targetEntity: Course::class)]
+    #[ORM\ManyToOne(targetEntity: Module::class)]
     #[Groups(['reservation:read', 'reservation:write'])]
-    private Course $course;
+    private Module $module;
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE, options: ['default' => 'CURRENT_TIMESTAMP'])]
     #[Groups(['reservation:read', 'reservation:write'])]
@@ -119,14 +119,14 @@ class Reservation implements \Stringable
         return $this;
     }
 
-    public function getCourse(): Course
+    public function getModule(): Module
     {
-        return $this->course;
+        return $this->module;
     }
 
-    public function setCourse(Course $course): static
+    public function setModule(Module $module): static
     {
-        $this->course = $course;
+        $this->module = $module;
 
         return $this;
     }

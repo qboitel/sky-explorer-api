@@ -2,11 +2,11 @@
 
 namespace App\Entity;
 
+use DateTimeImmutable;
+use Stringable;
 use ApiPlatform\Metadata\ApiResource;
 use App\Repository\UserRepository;
-use App\Traits\BlameableTrait;
 use App\Traits\TimestampableTrait;
-use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
@@ -24,7 +24,7 @@ use Symfony\Component\Uid\Uuid;
     normalizationContext: ['groups' => ['user:read']],
     denormalizationContext: ['groups' => ['user:write']],
 )]
-class User implements UserInterface, PasswordAuthenticatedUserInterface, \Stringable
+class User implements UserInterface, PasswordAuthenticatedUserInterface, Stringable
 {
     use TimestampableTrait;
 
@@ -81,7 +81,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, \String
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
     #[Groups(['user:read', 'user:write', 'reservation:read'])]
-    private ?\DateTimeImmutable $lastConnectedAt = null;
+    private ?DateTimeImmutable $lastConnectedAt = null;
 
     public function __construct()
     {
@@ -155,7 +155,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, \String
      */
     public function getUserIdentifier(): string
     {
-        return (string) $this->email;
+        return $this->email;
     }
 
     /**
@@ -285,12 +285,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, \String
         return $this;
     }
 
-    public function getLastConnectedAt(): ?\DateTimeImmutable
+    public function getLastConnectedAt(): ?DateTimeImmutable
     {
         return $this->lastConnectedAt;
     }
 
-    public function setLastConnectedAt(?\DateTimeImmutable $lastConnectedAt): self
+    public function setLastConnectedAt(?DateTimeImmutable $lastConnectedAt): self
     {
         $this->lastConnectedAt = $lastConnectedAt;
 

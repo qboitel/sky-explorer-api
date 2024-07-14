@@ -38,6 +38,14 @@ class Module implements \Stringable
     #[Groups(['module:read', 'module:write'])]
     private Formation $formation;
 
+    #[ORM\ManyToOne(targetEntity: Plane::class)]
+    #[Groups(['module:read', 'module:write'])]
+    private Plane $plane;
+
+    #[ORM\Column(type: Types::FLOAT)]
+    #[Groups(['module:read', 'module:write'])]
+    private float $price;
+
     #[ORM\OneToMany(targetEntity: Competence::class, mappedBy: 'module')]
     #[Groups(['module:read', 'module:write'])]
     private ArrayCollection $competences;
@@ -98,6 +106,30 @@ class Module implements \Stringable
     public function setCompetences(ArrayCollection $competences): static
     {
         $this->competences = $competences;
+
+        return $this;
+    }
+
+    public function getPlane(): Plane
+    {
+        return $this->plane;
+    }
+
+    public function setPlane(Plane $plane): static
+    {
+        $this->plane = $plane;
+
+        return $this;
+    }
+
+    public function getPrice(): float
+    {
+        return $this->price;
+    }
+
+    public function setPrice(float $price): static
+    {
+        $this->price = $price;
 
         return $this;
     }

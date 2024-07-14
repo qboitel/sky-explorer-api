@@ -39,10 +39,6 @@ class Formation implements \Stringable
     #[Groups(['formation:read', 'formation:write'])]
     private float $price;
 
-    #[ORM\OneToMany(targetEntity: Course::class, mappedBy: 'formation')]
-    #[Groups(['formation:read', 'formation:write'])]
-    private Collection $courses;
-
     #[ORM\OneToMany(targetEntity: Module::class, mappedBy: 'formation')]
     #[Groups(['formation:read', 'formation:write'])]
     private Collection $modules;
@@ -52,7 +48,6 @@ class Formation implements \Stringable
         $this->id = Uuid::v7();
         $this->createdAt = new \DateTimeImmutable();
         $this->updatedAt = new \DateTimeImmutable();
-        $this->courses = new ArrayCollection();
         $this->modules = new ArrayCollection();
     }
 
@@ -97,11 +92,6 @@ class Formation implements \Stringable
         return $this;
     }
 
-    public function getCourses(): Collection
-    {
-        return $this->courses;
-    }
-
     public function getModules(): Collection
     {
         return $this->modules;
@@ -124,19 +114,5 @@ class Formation implements \Stringable
     public function __toString(): string
     {
         return $this->name;
-    }
-
-    public function addCourse(Course $course): static
-    {
-        $this->courses->add($course);
-
-        return $this;
-    }
-
-    public function removeCourse(Course $course): static
-    {
-        $this->courses->removeElement($course);
-
-        return $this;
     }
 }
