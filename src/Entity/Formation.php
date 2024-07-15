@@ -24,11 +24,11 @@ class Formation implements \Stringable
 
     #[ORM\Id]
     #[ORM\Column(type: 'uuid')]
-    #[Groups(['formation:read'])]
+    #[Groups(['formation:read', 'module:read'])]
     private Uuid $id;
 
     #[ORM\Column(type: Types::STRING, length: 255)]
-    #[Groups(['formation:read', 'formation:write'])]
+    #[Groups(['formation:read', 'formation:write', 'module:read'])]
     private string $name;
 
     #[ORM\Column(type: Types::TEXT)]
