@@ -44,7 +44,7 @@ class Module implements \Stringable
     private Plane $plane;
 
     #[ORM\Column(type: Types::FLOAT)]
-    #[Groups(['module:read', 'module:write'])]
+    #[Groups(['module:read', 'module:write', 'reservation:read'])]
     private float $price;
 
     #[ORM\OneToMany(targetEntity: Competence::class, mappedBy: 'module')]
