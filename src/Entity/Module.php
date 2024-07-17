@@ -32,7 +32,7 @@ class Module implements \Stringable
     private string $name;
 
     #[ORM\Column(type: Types::TEXT)]
-    #[Groups(['module:read', 'module:write'])]
+    #[Groups(['module:read', 'module:write', 'reservation:read'])]
     private string $description;
 
     #[ORM\ManyToOne(targetEntity: Formation::class)]
